@@ -18,6 +18,10 @@ total_steps <- sum(activity$steps, na.rm=TRUE)
 mean_daily_steps <- round(mean(dailysteps$daysteps, na.rm = TRUE),2)
 median_daily_steps <- median(dailysteps$daysteps, na.rm = TRUE)
 qplot(daysteps, data=dailysteps, geom='histogram')
+png("figures/dailyanalysis.png")
+qplot(daysteps, data=dailysteps, geom='histogram')
+dev.off()
+
 
 #print out the summary data for the analysis
 summary <- data.frame(total_steps, mean_daily_steps, median_daily_steps)
@@ -26,6 +30,9 @@ print(summary)
 #timeseries plot of 5min interval steps taken
 intradaysteps <- ddply(activity, .(interval) , summarize, steps =mean(steps, na.rm = TRUE))
 qplot(interval, steps, data=intradaysteps, geom="line")
+png("figures/intraday.png")
+qplot(interval, steps, data=intradaysteps, geom="line")
+dev.off()
 
 #return the 5min interval with the maximum average steps each day
 sortedinterval <- intradaysteps[rev(order(intradaysteps$steps)),]
@@ -45,9 +52,12 @@ dailystepsNA <- ddply(activityNA, .(date) , summarize, daysteps =sum(stepsna))
 mean_daily_stepsNA <- round(mean(dailystepsNA$daysteps, na.rm = TRUE),2)
 median_daily_stepsNA <- median(dailystepsNA$daysteps, na.rm = TRUE)
 qplot(daysteps, data=dailystepsNA, geom='histogram')
+png("figures/dailyanalysisNA.png")
+qplot(daysteps, data=dailystepsNA, geom='histogram')
+dev.off()
 
 #print out the summary data for the analysis
-summaryNA <- data.frame(CountNA, mean_daily_stepsNA, median_daily_stepsNA)
+summaryNA <- data.frame(countNA, mean_daily_stepsNA, median_daily_stepsNA)
 print(summaryNA)
 
 #calculated the difference between weekday and weekend activity
@@ -61,3 +71,6 @@ activityNA$weekendflag <- as.factor(activityNA$weekendflag)
 
 # Create the 2 level lattice plot using ggplot2
 qplot(interval, steps, facets = weekendflag~., data=activityNA, geom= 'line')
+png("figures/weekdayNA.png")
+qplot(interval, steps, facets = weekendflag~., data=activityNA, geom= 'line')
+dev.off()

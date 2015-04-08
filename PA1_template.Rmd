@@ -1,7 +1,7 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
 output: 
-html_document:
+html_document: PA1_template.html
 keep_md: true
 ---
 
@@ -40,6 +40,9 @@ median_daily_steps <- median(dailysteps$daysteps, na.rm = TRUE)
 
 #create a histogram of the mean daily steps taken
 qplot(daysteps, data=dailysteps, geom='histogram')
+png("figures/dailyanalysis.png")
+qplot(daysteps, data=dailysteps, geom='histogram')
+dev.off()
 
 #print out the summary data for the analysis
 summary <- data.frame(total_steps, mean_daily_steps, median_daily_steps)
@@ -56,6 +59,9 @@ From this and assessment of the maximum steps taking in a individual interval is
 #timeseries plot of 5min interval steps taken
 intradaysteps <- ddply(activity, .(interval) , summarize, steps =mean(steps, na.rm = TRUE))
 qplot(interval, steps, data=intradaysteps, geom="line")
+png("figures/intraday.png")
+qplot(interval, steps, data=intradaysteps, geom="line")
+dev.off()
 
 #return the 5min interval with the maximum average steps each day
 sortedinterval <- intradaysteps[rev(order(intradaysteps$steps)),]
@@ -67,9 +73,6 @@ sortedinterval[1,]
 The missing values are replaced with the mean for the time interval across the data set. This result is then used for the subsequent analysis.
 A repeat of the daily analysis in Question 1 is repeated on the NA cleaned data.
 ```{r NA removal}
-# #carry over daily steps summary from daily steps analysis
-# dailysteps <- ddply(activity, .(date) , summarize, daysteps =sum(steps))
-#count of NAs in dataset
 countNA <- sum(is.na(activity$steps))
 
 #replace the NA fields with the mean for that time interval using the optmatch package
@@ -81,6 +84,9 @@ dailystepsNA <- ddply(activityNA, .(date) , summarize, daysteps =sum(stepsna))
 mean_daily_stepsNA <- round(mean(dailystepsNA$daysteps, na.rm = TRUE),2)
 median_daily_stepsNA <- median(dailystepsNA$daysteps, na.rm = TRUE)
 qplot(daysteps, data=dailystepsNA, geom='histogram')
+png("figures/dailyanalysisNA.png")
+qplot(daysteps, data=dailystepsNA, geom='histogram')
+dev.off()
 
 #print out the summary data for the analysis
 summaryNA <- data.frame(countNA, mean_daily_stepsNA, median_daily_stepsNA)
@@ -102,6 +108,9 @@ activityNA$weekendflag <- as.factor(activityNA$weekendflag)
 
 # Create the 2 level lattice plot using ggplot2
 qplot(interval, steps, facets = weekendflag~., data=activityNA, geom= 'line')
+png("figures/weekdayNA.png")
+qplot(interval, steps, facets = weekendflag~., data=activityNA, geom= 'line')
+dev.off()
 ```
 
 The comparasion line graphs show weekdays have higher step counts across the day, especially earlier in the day. While weekends have a similar period maximum, it happens later in the day and that maximum is not sustained for as long.
